@@ -45,7 +45,7 @@ if [ "$(basename $2)" = "Image.gz" ]; then
 else
 # Normal install
   echo "Installing normal kernel"
-  base=vmlinux
+  base=Image
 fi
 
 if [ -f $4/$base-$1 ]; then
