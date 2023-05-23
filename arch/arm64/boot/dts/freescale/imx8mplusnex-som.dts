@@ -21,6 +21,15 @@
 		reg = <0x0 0x40000000 0 0x80000000>;
 	};
 
+	reg_audio_pwr: regulator-audio-pwr {
+		compatible = "regulator-fixed";
+		regulator-name = "audio-pwr";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		enable-active-high;
+		regulator-always-on;
+	};
+
         usdhc1_pwrseq: usdhc1_pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>,
@@ -93,6 +102,20 @@
 		};
 	};
 
+	sound-sgtl5000 {
+		compatible = "fsl,imx-sgtl5000",
+			     "fsl,imx-audio-sgtl5000";
+		model = "audio-sgtl5000";
+		audio-cpu = <&sai3>;
+		audio-codec = <&codec>;
+		audio-asrc = <&easrc>;
+		audio-routing =
+			"MIC_IN", "Mic Jack",
+			"Mic Jack", "Mic Bias",
+			"Headphone Jack", "HP_OUT";
+		fsl,no-audmux = "true";
+	};
+
 };
 
 &A53_0 {
@@ -113,6 +136,10 @@
 };
 
 &dsp {
+	status = "okay";
+};
+
+&aud2htx {
 	status = "okay";
 };
 
@@ -166,19 +193,11 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_eqos>;
 	phy-mode = "rgmii-id";
-	phy-handle = <&ethphy0>;
 	status = "okay";
 
-	mdio {
-		compatible = "snps,dwmac-mdio";
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		ethphy0: ethernet-phy@6 {
-			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <6>;
-			micrel,led-mode = <1>;   //0 - Tricolour, 1 -Individual
-		};
+	fixed-link {
+		   speed = <0x64>;
+		   full-duplex;
 	};
 
 
@@ -298,6 +317,17 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c3>;
 	status = "okay";
+
+	codec: sgtl5000@a {
+		compatible = "fsl,sgtl5000";
+		reg = <0x0a>;
+		clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI3_MCLK1>;
+		clock-names = "mclk";
+		wlf,shared-lrclk;
+		wlf,hp-cfg = <3 2 3>;
+		wlf,gpio-cfg = <1 3>;
+		SPKVDD1-supply = <&reg_audio_pwr>;
+	};
 };
 
 &snvs_pwrkey {
