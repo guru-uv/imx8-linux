@@ -40,15 +40,6 @@
 	};
 
 
-	/*bt_rfkill {
-		compatible = "net,rfkill-gpio";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_bt_ctrl>;
-		name = "bt_rfkill";
-		type = "bluetooth";
-		shutdown-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>; 
-	};*/
-
         usdhc1_pwrseq: usdhc1_pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
@@ -479,17 +470,9 @@
 	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
 	keep-power-in-suspend;
 	non-removable;
-	//wakeup-source;
 	mmc-pwrseq = <&usdhc1_pwrseq>;
 	fsl,sdio-async-interrupt-enabled;
 	status = "okay";
-
-	/*wifi_wake_host {
-		compatible = "nxp,wifi-wake-host";
-		interrupt-parent = <&gpio1>;
-		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
-		interrupt-names = "host-wake";
-	};*/
 };
 
 &wdog1 {
@@ -647,13 +630,6 @@
 			MX8MP_IOMUXC_ECSPI2_SS0__UART4_DCE_RTS	0x140
 		>;
 	};
-
-	/*pinctrl_bt_ctrl: bt_ctrlgrp {
-		fsl,pins = <
-			MX8MP_IOMUXC_GPIO1_IO11__GPIO1_IO11	0X19 
-		>;
-	};*/
-
 
 	pinctrl_usdhc1: usdhc1grp {
 		fsl,pins = <
